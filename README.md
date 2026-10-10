@@ -27,7 +27,9 @@ El código está preparado para una placa PlatformIO `esp32doit-devkit-v1`. Si t
 
 ## Modelo 3D
 
-El modelo 3D de la carcasa está disponible en [`models/case.3mf`](models/case.3mf).
+El modelo 3D de la carcasa se diseñó en **Fusion 360** y está disponible en [`models/case.3mf`](models/case.3mf).
+
+![Vista previa del modelo 3D de TheBox](assets/case-preview.png)
 
 ## Animación de Madoka
 
