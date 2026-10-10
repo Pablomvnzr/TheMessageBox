@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <esp_system.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -26,7 +27,9 @@ Preferences prefs;
 WebServer server(80);
 String messages[40];
 size_t messageCount = 0;
-size_t messageIndex = 0;
+size_t messageOrder[40];
+size_t messageOrderCursor = 0;
+int lastMessageIndex = -1;
 bool touchWasDown = false;
 uint32_t lastTouchMs = 0;
 uint32_t tapWindowStart = 0;
@@ -34,6 +37,30 @@ uint8_t tapCount = 0;
 bool configWindow = false;
 bool configMode = false;
 
+void shuffleMessageOrder() {
+  for (size_t i = 0; i < messageCount; ++i) messageOrder[i] = i;
+  for (size_t i = messageCount; i > 1; --i) {
+    size_t j = static_cast<size_t>(random(i));
+    size_t temp = messageOrder[i - 1];
+    messageOrder[i - 1] = messageOrder[j];
+    messageOrder[j] = temp;
+  }
+  // Evita que el ultimo mensaje de un ciclo se repita al comenzar el siguiente.
+  if (messageCount > 1 && lastMessageIndex >= 0 && messageOrder[0] == static_cast<size_t>(lastMessageIndex)) {
+    size_t j = 1 + static_cast<size_t>(random(messageCount - 1));
+    size_t temp = messageOrder[0];
+    messageOrder[0] = messageOrder[j];
+    messageOrder[j] = temp;
+  }
+  messageOrderCursor = 0;
+}
+
+size_t nextMessageIndex() {
+  if (messageOrderCursor >= messageCount) shuffleMessageOrder();
+  size_t index = messageOrder[messageOrderCursor++];
+  lastMessageIndex = static_cast<int>(index);
+  return index;
+}
 String oledCompatibleText(const String &input) {
   String out;
   for (size_t i = 0; i < input.length(); ++i) {
@@ -211,7 +238,7 @@ void handleDelete() {
   int i = server.arg("i").toInt();
   if (i >= 0 && static_cast<size_t>(i) < messageCount) {
     for (size_t j = i; j + 1 < messageCount; ++j) messages[j] = messages[j + 1];
-    --messageCount; if (messageIndex >= messageCount) messageIndex = 0;
+    --messageCount;
     saveMessages();
   }
   server.sendHeader("Location", "/"); server.send(303);
@@ -253,6 +280,8 @@ void setup() {
   if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS)) while (true) delay(1000);
   prefs.begin("thebox", false);
   loadMessages();
+  randomSeed(esp_random());
+  shuffleMessageOrder();
   playIntro();
   drawCentered("para la más linda");
   delay(1500);
@@ -278,7 +307,6 @@ void loop() {
     return;
   }
   if (messageCount) {
-    drawCentered(messages[messageIndex]);
-    messageIndex = (messageIndex + 1) % messageCount;
+    drawCentered(messages[nextMessageIndex()]);
   }
 }
