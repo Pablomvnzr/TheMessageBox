@@ -155,14 +155,8 @@ void drawCentered(const String &text) {
   display.display();
 }
 void drawGreetingProgress(uint8_t filled) {
-  display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);
-  display.setTextSize(2);
-  const String greeting = "Hola Sami <3";
-  int16_t x1, y1; uint16_t w, h;
-  display.getTextBounds(greeting, 0, 0, &x1, &y1, &w, &h);
-  display.setCursor((SCREEN_W - w) / 2, 16);
-  display.print(greeting);
+  // Usa el mismo ajuste y centrado que el saludo normal para que no salte al tocar.
+  drawCentered("Hola Sami <3");
   const int16_t firstX = 54;
   for (uint8_t i = 0; i < TRIPLE_TAP_COUNT; ++i) {
     int16_t x = firstX + i * 10;
@@ -171,7 +165,6 @@ void drawGreetingProgress(uint8_t filled) {
   }
   display.display();
 }
-
 void drawConfigInfo() {
   display.clearDisplay();
   display.setTextSize(1); display.setTextColor(SSD1306_WHITE);
