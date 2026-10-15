@@ -5,7 +5,7 @@ TheBox es una cajita de mensajes basada en un **ESP32**, una pantalla OLED monoc
 ## Qué hace
 
 - Reproduce una animación introductoria almacenada como fotogramas monocromáticos en `include/VideoFrame.h`.
-- Muestra los saludos iniciales «para la más linda» y «Hola "nombre" <3».
+- Muestra los saludos iniciales «para la más linda» y «Hola "-custom name-" <3».
 - Permite entrar al modo de configuración al tocar tres veces durante el segundo que aparece el saludo. En pantalla se indica el nombre de la red Wi-Fi y la dirección IP; los tres círculos muestran el progreso de los toques.
 - Crea una red Wi-Fi llamada `CajitaMSG`. Al conectarse a ella, se puede abrir `http://192.168.4.1` para ver, agregar y eliminar mensajes.
 - Guarda los mensajes en la memoria no volátil del ESP32, por lo que se conservan al reiniciar.
