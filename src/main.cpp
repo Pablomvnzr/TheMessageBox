@@ -156,7 +156,7 @@ void drawCentered(const String &text) {
 }
 void drawGreetingProgress(uint8_t filled) {
   // Usa el mismo ajuste y centrado que el saludo normal para que no salte al tocar.
-  drawCentered("Hola Sami <3");
+  drawCentered("Hola -custom name- <3");
   const int16_t firstX = 54;
   for (uint8_t i = 0; i < TRIPLE_TAP_COUNT; ++i) {
     int16_t x = firstX + i * 10;
